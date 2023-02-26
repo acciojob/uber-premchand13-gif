@@ -34,7 +34,8 @@ public class CustomerServiceImpl implements CustomerService {
 	public void deleteCustomer(Integer customerId) {
 		// Delete customer without using deleteById function
 
-		customerRepository2.deleteById(customerId);
+		Customer customer=customerRepository2.findById(customerId).get();
+		customerRepository2.delete(customer);
 	}
 
 	@Override
@@ -70,15 +71,16 @@ public class CustomerServiceImpl implements CustomerService {
 		tripBooking.setCustomer(customer);
 
 
-		tripBookingRepository2.save(tripBooking);
+//		tripBookingRepository2.save(tripBooking);
 		List<TripBooking> tripBookingList=customer.getTripBookingList();
 		tripBookingList.add(tripBooking);
 		customer.setTripBookingList(tripBookingList);
+		customerRepository2.save(customer);
 
 		List<TripBooking> tripBookingList1=driver.getTripBookingList();
 		tripBookingList1.add(tripBooking);
 		driver.setTripBookingList(tripBookingList1);
-		customerRepository2.save(customer);
+
 		driverRepository2.save(driver);
 		return tripBooking;
 
@@ -90,10 +92,11 @@ public class CustomerServiceImpl implements CustomerService {
 
 		TripBooking tripBooking=tripBookingRepository2.findById(tripId).get();
 		tripBooking.setStatus(TripStatus.CANCELED);
+		tripBooking.setBill(0);
 
 		tripBooking.getDriver().getCab().setAvailable(true);
 
-		driverRepository2.save(tripBooking.getDriver());
+//		driverRepository2.save(tripBooking.getDriver());
 		tripBookingRepository2.save(tripBooking);
 
 	}
@@ -105,7 +108,7 @@ public class CustomerServiceImpl implements CustomerService {
 		TripBooking tripBooking=tripBookingRepository2.findById(tripId).get();
 		tripBooking.setStatus(TripStatus.COMPLETED);
 		tripBooking.getDriver().getCab().setAvailable(true);
-		driverRepository2.save(tripBooking.getDriver());
+//		driverRepository2.save(tripBooking.getDriver());
 		tripBookingRepository2.save(tripBooking);
 
 	}
